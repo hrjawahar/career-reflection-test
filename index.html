@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quick Demo • Bold Leader’s Reflection (10‑question sampler)</title>
+<style>
+  :root{ --bg:#0b1020; --card:#121a33; --text:#e9eef9; --accent:#7aa2ff; --border:#24346a; --hover:#1b2550; --ok:#34a853; }
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    color:var(--text);
+    background: radial-gradient(1200px 800px at 20% 0%, #111b3a 0%, var(--bg) 40%, #090e1a 100%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .wrap{ width:min(980px,94vw); margin:auto; }
+  header{ text-align:center; margin:14px 0 10px }
+  h1{ margin:0; font-size:28px; color:#dbe6ff; letter-spacing:.2px }
+  p.sub{ margin:6px 0 0; color:#a9b6e6 }
+  .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; box-shadow:0 10px 28px rgba(0,0,0,.25) }
+  .btn{ display:inline-block; background:linear-gradient(90deg,#3658ff,#7aa2ff); color:#fff; padding:10px 14px; border-radius:10px; font-weight:700; text-decoration:none; border:0; cursor:pointer; }
+  .btn.ghost{ background:transparent; border:1px solid var(--accent); color:#dbe6ff }
+  .row{ display:grid; grid-template-columns:1fr; gap:14px; }
+  .field{ background:#0f1834; border:1px solid #24346a; border-radius:12px; padding:12px }
+  .field label{ display:block; font-weight:700; margin-bottom:6px; color:#eaf0ff }
+  .topic{ font-size:12px; color:#9db2ff; margin-bottom:6px }
+  textarea{ width:100%; min-height:96px; resize:vertical; font:inherit; color:#e9eef9; background:transparent; border:0; outline:none }
+  .hint{ font-size:12px; color:#9db2ff; display:flex; justify-content:space-between }
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-top:14px; align-items:center }
+  .actions .left{ margin-right:auto; display:flex; gap:10px; align-items:center }
+  footer{ margin-top:12px; font-size:12px; color:#8aa0e9; text-align:center }
+  .fab{ position:fixed; right:18px; bottom:18px; z-index:10; border:0; border-radius:999px; padding:12px 14px; font-weight:800; cursor:pointer; background:linear-gradient(90deg,#34a853,#81c995); color:#06210f; box-shadow:0 8px 22px rgba(0,0,0,.35) }
+  .mini{ font-size:12px; opacity:.8 }
+  #intro{ position:fixed; inset:0; background:rgba(5,8,16,.94); display:flex; align-items:center; justify-content:center; z-index:9999 }
+  #intro .panel{ width:min(780px,92vw); background:#ffffff; color:#0b1020; border-radius:16px; padding:22px; box-shadow:0 24px 48px rgba(0,0,0,.35) }
+  #intro h2{ margin:0 0 8px 0; font-size:26px }
+  #intro p{ margin:6px 0; color:#26304d }
+  #intro .cta{ display:flex; gap:10px; justify-content:flex-end; margin-top:10px; flex-wrap:wrap }
+  #intro .cta .btn{ background:#0b1020 }
+  #toast{ position:fixed; left:50%; transform:translateX(-50%); bottom:90px; background:#101a3a; color:#fff; border:1px solid #2a3b79; padding:10px 14px; border-radius:12px; display:none }
+  .prog{ height:10px; background:#0f1834; border-radius:999px; overflow:hidden; border:1px solid #24346a; margin:10px 0 12px }
+  .prog > i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,#3658ff,#7aa2ff) }
+  .badge{ display:inline-block; font-size:11px; border:1px solid #2c3f82; padding:2px 8px; border-radius:999px; color:#a9b6e6 }
+</style>
+</head>
+<body>
+<div id="intro" role="dialog" aria-modal="true" aria-label="Intro">
+  <div class="panel">
+    <h2>Try the 10‑question sampler</h2>
+    <p><strong>Purpose:</strong> A quick flavour from both <em>Reflections</em> and <em>Playbook</em> — covering all topics.</p>
+    <p><strong>What to do:</strong> answer any 3–10 prompts (your choice), then share how it felt.</p>
+    <p><strong>Time:</strong> ~5–8 minutes if you answer all 10. Your inputs are saved locally to your browser only.</p>
+    <div class="cta">
+      <a class="btn ghost" href="bold_playbook_prototype.html" target="_blank" rel="noopener">See full prototype</a>
+      <button class="btn" id="start">Start the 10‑question demo →</button>
+      <span class="badge">Includes: 5 Reflection + 5 Play topics (shuffled)</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <h1>Bold Leader’s Reflection — 10‑question Sampler</h1>
+    <p class="sub">Randomized each load. Covers every topic once.</p>
+  </header>
+
+  <div class="card">
+    <div class="prog" aria-hidden="true"><i id="bar"></i></div>
+    <div id="qwrap" class="row"></div>
+    <div class="actions">
+      <div class="left">
+        <a class="btn ghost" href="bold_playbook_prototype.html" target="_blank" rel="noopener" title="Go to the full multi-section prototype">← Back to full prototype</a>
+      </div>
+      <button class="btn ghost" id="download">Download my notes (Word)</button>
+      <button class="btn" id="finish">I’m done — open feedback</button>
+    </div>
+  </div>
+
+  <footer>© 2025 Vidhur Talent Synergy Solutions · Prototype Sampler • <span class="mini">Your notes stay on this device</span></footer>
+</div>
+
+<a class="fab" id="giveFeedback" href="https://docs.google.com/forms/d/14heMhZUHjkvwTBWKLvgQS2wwVxyXBztpZedMDu_plcQ/edit?pli=1" target="_blank" rel="noopener">📝 Give Feedback</a>
+<div id="toast" role="status" aria-live="polite">Saved locally</div>
+
+<script>
+(function(){
+  const intro=document.getElementById("intro");
+  document.getElementById("start").onclick=()=>intro.remove();
+  const qwrap=document.getElementById("qwrap");
+  const toast=document.getElementById("toast");
+  const bar=document.getElementById("bar");
+  const formUrl="https://docs.google.com/forms/d/14heMhZUHjkvwTBWKLvgQS2wwVxyXBztpZedMDu_plcQ/edit?pli=1";
+
+  // --- Question pools ---
+  const reflections = [
+    { id:"R1", topic:"Reflection • Starting", q:"What is the single spark you want to turn into visible movement this month?" },
+    { id:"R2", topic:"Reflection • Accountability", q:"Who owns the next step — you, your manager, or a partner? What is your role in it?" },
+    { id:"R3", topic:"Reflection • External Signals", q:"What do recent signals (feedback, reviews, stakeholder reactions) say about your credibility?" },
+    { id:"R4", topic:"Reflection • Movement & Responsibility", q:"Name one small, visible action you can complete within 48 hours." },
+    { id:"R5", topic:"Reflection • Final Anchor", q:"Write a short anchor statement you want to return to when you feel stuck." }
+  ];
+  const plays = [
+    { id:"P1", topic:"Play • Credibility", q:"Where is your credibility strongest today, and where is it thinnest?" },
+    { id:"P2", topic:"Play • Ideas to Impact", q:"Pick one idea and frame its impact in 1–2 lines (why it matters now)." },
+    { id:"P3", topic:"Play • Storytelling", q:"Draft a 2–3 line narrative that turns your work into a story stakeholders can repeat." },
+    { id:"P4", topic:"Play • Role Reset", q:"What part of your role needs a reset (scope, stakeholders, cadence) — and what would ‘reset’ look like?" },
+    { id:"P5", topic:"Play • Hidden Strengths", q:"Name a hidden strength others underuse — how can you bring it into a live project?" }
+  ];
+
+  // Pick 5 from reflections (all 5) and 5 from plays (all 5), then shuffle order
+  const selected = reflections.concat(plays);
+  shuffle(selected);
+
+  // Render questions
+  const ids = [];
+  selected.forEach((item, idx)=>{
+    const fid = "q_"+item.id;
+    ids.push(fid);
+    const saved = localStorage.getItem("sampler:"+fid) || "";
+    const block = document.createElement("div");
+    block.className="field";
+    block.innerHTML = `
+      <div class="topic">${item.topic}</div>
+      <label for="${fid}">${idx+1}) ${item.q}</label>
+      <textarea id="${fid}" placeholder="Type 1–3 lines..."></textarea>
+      <div class="hint"><span>Auto‑saves locally</span><span id="c_${fid}">${saved.length} chars</span></div>
+    `;
+    qwrap.appendChild(block);
+    const ta = block.querySelector("textarea"); ta.value = saved;
+    ta.addEventListener("input", ()=>{ localStorage.setItem("sampler:"+fid, ta.value); updateCounter(fid); updateProgress(); flashToast(); });
+  });
+
+  function updateCounter(fid){
+    const el = document.getElementById("c_"+fid);
+    const ta = document.getElementById(fid);
+    if(el && ta) el.textContent = (ta.value||"").length + " chars";
+  }
+  function updateProgress(){
+    const total = ids.reduce((n, fid)=> n + ((document.getElementById(fid).value||"").trim().length>0 ? 1:0), 0);
+    bar.style.width = (total/ids.length*100) + "%";
+  }
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  }
+  let t; function flashToast(){ clearTimeout(t); toast.style.display="block"; t=setTimeout(()=>toast.style.display="none",900); }
+  updateProgress();
+
+  // Download RTF
+  document.getElementById("download").onclick=()=>{ 
+    function escRTF(s){ return s.replace(/\\/g,"\\\\").replace(/{/g,"\{").replace(/}/g,"\}").replace(/\n/g,"\\par "); }
+    let body = "\b Bold Leader’s Reflection — 10‑question Sampler\b0\par ";
+    ids.forEach((fid, i)=>{ 
+      const lab = document.querySelector("label[for='"+fid+"']").textContent;
+      const val = document.getElementById(fid).value||"";
+      const topic = document.querySelector("#"+fid).closest(".field").querySelector(".topic").textContent;
+      body += "\par \b "+escRTF(topic)+"\b0\par ";
+      body += escRTF(lab)+"\par "+escRTF(val)+"\par ";
+    });
+    const rtf = "{\rtf1\ansi\deff0{\fonttbl{\f0 Arial;}}\fs22 " + body + "}";
+    const blob = new Blob([rtf], {type:"application/rtf"});
+    trigger(blob, "reflection_sampler_notes.rtf");
+  };
+  function trigger(blob, name){ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+
+  document.getElementById("finish").onclick=()=>{ window.open(formUrl, "_blank", "noopener"); };
+})();
+</script>
+</body>
+</html>
