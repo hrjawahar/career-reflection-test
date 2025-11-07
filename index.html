@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Quick Demo • Bold Leader’s Reflection (10‑question sampler)</title>
+<title>Bold Leader’s Reflection — Signature 10-Question Flow</title>
 <style>
   :root{ --bg:#0b1020; --card:#121a33; --text:#e9eef9; --accent:#7aa2ff; --border:#24346a; --hover:#1b2550; --ok:#34a853; }
   html,body{height:100%}
@@ -23,7 +23,7 @@
   .row{ display:grid; grid-template-columns:1fr; gap:14px; }
   .field{ background:#0f1834; border:1px solid #24346a; border-radius:12px; padding:12px }
   .field label{ display:block; font-weight:700; margin-bottom:6px; color:#eaf0ff }
-  .topic{ font-size:12px; color:#9db2ff; margin-bottom:6px }
+  .stage{ font-size:12px; color:#9db2ff; margin-bottom:6px }
   textarea{ width:100%; min-height:96px; resize:vertical; font:inherit; color:#e9eef9; background:transparent; border:0; outline:none }
   .hint{ font-size:12px; color:#9db2ff; display:flex; justify-content:space-between }
   .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-top:14px; align-items:center }
@@ -46,22 +46,22 @@
 <body>
 <div id="intro" role="dialog" aria-modal="true" aria-label="Intro">
   <div class="panel">
-    <h2>Try the 10‑question sampler</h2>
-    <p><strong>Purpose:</strong> A quick flavour from both <em>Reflections</em> and <em>Playbook</em> — covering all topics.</p>
-    <p><strong>What to do:</strong> answer any 3–10 prompts (your choice), then share how it felt.</p>
-    <p><strong>Time:</strong> ~5–8 minutes if you answer all 10. Your inputs are saved locally to your browser only.</p>
+    <h2>Experience the Signature Flow</h2>
+    <p><strong>Purpose:</strong> Move from confusion → clarity → commitment in 10 guided prompts.</p>
+    <p><strong>What to do:</strong> Answer in short lines; your notes auto‑save locally. Download at the end.</p>
+    <p><strong>Time:</strong> ~7 minutes for all 10.</p>
     <div class="cta">
       <a class="btn ghost" href="bold_playbook_prototype.html" target="_blank" rel="noopener">See full prototype</a>
-      <button class="btn" id="start">Start the 10‑question demo →</button>
-      <span class="badge">Includes: 5 Reflection + 5 Play topics (shuffled)</span>
+      <button class="btn" id="start">Start the 10-question flow →</button>
+      <span class="badge">Stages: Curiosity • Barriers • Action • Strength • Anchor</span>
     </div>
   </div>
 </div>
 
 <div class="wrap">
   <header>
-    <h1>Bold Leader’s Reflection — 10‑question Sampler</h1>
-    <p class="sub">Randomized each load. Covers every topic once.</p>
+    <h1>Bold Leader’s Reflection — 10-Question Flow</h1>
+    <p class="sub">A guided mini‑journey from insight to a small, visible next move.</p>
   </header>
 
   <div class="card">
@@ -76,7 +76,7 @@
     </div>
   </div>
 
-  <footer>© 2025 Vidhur Talent Synergy Solutions · Prototype Sampler • <span class="mini">Your notes stay on this device</span></footer>
+  <footer>© 2025 Vidhur Talent Synergy Solutions · Signature Sampler • <span class="mini">Your notes stay on this device</span></footer>
 </div>
 
 <a class="fab" id="giveFeedback" href="https://docs.google.com/forms/d/14heMhZUHjkvwTBWKLvgQS2wwVxyXBztpZedMDu_plcQ/edit?pli=1" target="_blank" rel="noopener">📝 Give Feedback</a>
@@ -91,43 +91,36 @@
   const bar=document.getElementById("bar");
   const formUrl="https://docs.google.com/forms/d/14heMhZUHjkvwTBWKLvgQS2wwVxyXBztpZedMDu_plcQ/edit?pli=1";
 
-  // --- Question pools ---
-  const reflections = [
-    { id:"R1", topic:"Reflection • Starting", q:"What is the single spark you want to turn into visible movement this month?" },
-    { id:"R2", topic:"Reflection • Accountability", q:"Who owns the next step — you, your manager, or a partner? What is your role in it?" },
-    { id:"R3", topic:"Reflection • External Signals", q:"What do recent signals (feedback, reviews, stakeholder reactions) say about your credibility?" },
-    { id:"R4", topic:"Reflection • Movement & Responsibility", q:"Name one small, visible action you can complete within 48 hours." },
-    { id:"R5", topic:"Reflection • Final Anchor", q:"Write a short anchor statement you want to return to when you feel stuck." }
-  ];
-  const plays = [
-    { id:"P1", topic:"Play • Credibility", q:"Where is your credibility strongest today, and where is it thinnest?" },
-    { id:"P2", topic:"Play • Ideas to Impact", q:"Pick one idea and frame its impact in 1–2 lines (why it matters now)." },
-    { id:"P3", topic:"Play • Storytelling", q:"Draft a 2–3 line narrative that turns your work into a story stakeholders can repeat." },
-    { id:"P4", topic:"Play • Role Reset", q:"What part of your role needs a reset (scope, stakeholders, cadence) — and what would ‘reset’ look like?" },
-    { id:"P5", topic:"Play • Hidden Strengths", q:"Name a hidden strength others underuse — how can you bring it into a live project?" }
+  // Ordered signature questions
+  const flow = [
+    { stage:"Stage 1 • Curiosity", q:"What feels unclear or stuck right now — something you keep thinking about but haven’t yet acted on?", id:"Q1" },
+    { stage:"Stage 1 • Curiosity", q:"If that were to change, what difference would it make — for you or people around you?", id:"Q2" },
+    { stage:"Stage 2 • Barriers", q:"What’s the biggest story you tell yourself that stops you from moving forward?", id:"Q3" },
+    { stage:"Stage 2 • Barriers", q:"What do recent signals (feedback, reactions, reviews) reveal about how others see your readiness?", id:"Q4" },
+    { stage:"Stage 3 • Action", q:"If you could start small, what’s one visible action you could take within 48 hours?", id:"Q5" },
+    { stage:"Stage 3 • Action", q:"What support, rhythm, or accountability would make it easier to sustain that move?", id:"Q6" },
+    { stage:"Stage 4 • Strength", q:"What hidden strength or quality do others often miss about you — and how might you bring it into play now?", id:"Q7" },
+    { stage:"Stage 4 • Strength", q:"If you could reset one part of your role or approach, what would you redefine first?", id:"Q8" },
+    { stage:"Stage 5 • Anchor", q:"What new story about yourself do you want to believe from this moment on?", id:"Q9" },
+    { stage:"Stage 5 • Anchor", q:"What one commitment will you carry forward after this reflection — however small?", id:"Q10" }
   ];
 
-  // Pick 5 from reflections (all 5) and 5 from plays (all 5), then shuffle order
-  const selected = reflections.concat(plays);
-  shuffle(selected);
-
-  // Render questions
   const ids = [];
-  selected.forEach((item, idx)=>{
+  flow.forEach((item, idx)=>{
     const fid = "q_"+item.id;
     ids.push(fid);
-    const saved = localStorage.getItem("sampler:"+fid) || "";
+    const saved = localStorage.getItem("sigflow:"+fid) || "";
     const block = document.createElement("div");
     block.className="field";
     block.innerHTML = `
-      <div class="topic">${item.topic}</div>
+      <div class="stage">${item.stage}</div>
       <label for="${fid}">${idx+1}) ${item.q}</label>
       <textarea id="${fid}" placeholder="Type 1–3 lines..."></textarea>
-      <div class="hint"><span>Auto‑saves locally</span><span id="c_${fid}">${saved.length} chars</span></div>
+      <div class="hint"><span>Auto-saves locally</span><span id="c_${fid}">${saved.length} chars</span></div>
     `;
     qwrap.appendChild(block);
     const ta = block.querySelector("textarea"); ta.value = saved;
-    ta.addEventListener("input", ()=>{ localStorage.setItem("sampler:"+fid, ta.value); updateCounter(fid); updateProgress(); flashToast(); });
+    ta.addEventListener("input", ()=>{ localStorage.setItem("sigflow:"+fid, ta.value); updateCounter(fid); updateProgress(); flashToast(); });
   });
 
   function updateCounter(fid){
@@ -139,26 +132,23 @@
     const total = ids.reduce((n, fid)=> n + ((document.getElementById(fid).value||"").trim().length>0 ? 1:0), 0);
     bar.style.width = (total/ids.length*100) + "%";
   }
-  function shuffle(arr){
-    for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
-  }
   let t; function flashToast(){ clearTimeout(t); toast.style.display="block"; t=setTimeout(()=>toast.style.display="none",900); }
   updateProgress();
 
   // Download RTF
   document.getElementById("download").onclick=()=>{ 
     function escRTF(s){ return s.replace(/\\/g,"\\\\").replace(/{/g,"\{").replace(/}/g,"\}").replace(/\n/g,"\\par "); }
-    let body = "\b Bold Leader’s Reflection — 10‑question Sampler\b0\par ";
+    let body = "\b Bold Leader’s Reflection — Signature 10-Question Flow\b0\par ";
     ids.forEach((fid, i)=>{ 
       const lab = document.querySelector("label[for='"+fid+"']").textContent;
       const val = document.getElementById(fid).value||"";
-      const topic = document.querySelector("#"+fid).closest(".field").querySelector(".topic").textContent;
-      body += "\par \b "+escRTF(topic)+"\b0\par ";
+      const stage = document.querySelector("#"+fid).closest(".field").querySelector(".stage").textContent;
+      body += "\par \b "+escRTF(stage)+"\b0\par ";
       body += escRTF(lab)+"\par "+escRTF(val)+"\par ";
     });
     const rtf = "{\rtf1\ansi\deff0{\fonttbl{\f0 Arial;}}\fs22 " + body + "}";
     const blob = new Blob([rtf], {type:"application/rtf"});
-    trigger(blob, "reflection_sampler_notes.rtf");
+    trigger(blob, "reflection_signature_flow_notes.rtf");
   };
   function trigger(blob, name){ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
 
