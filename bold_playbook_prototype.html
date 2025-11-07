@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bold Leader’s Playbook – Prototype</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --ink:#1a1a1a;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent1:#3b82f6;  /* Play 1 */
+      --accent2:#10b981;  /* Play 2 */
+      --accent3:#f59e0b;  /* Play 3 */
+      --accent4:#8b5cf6;  /* Play 4 */
+      --accent5:#ef4444;  /* Play 5 */
+      --radius:14px;
+      --space:14px;
+    }
+    html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", Helvetica, sans-serif;}
+    *{box-sizing:border-box}
+    .wrap{max-width:1200px;margin:32px auto;padding:0 16px}
+
+    /* Top Tabs */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:16px}
+    .tab{padding:10px 14px;border:1px solid var(--line);border-bottom:none;border-top-left-radius:var(--radius);border-top-right-radius:var(--radius);background:#fafafa;color:var(--ink);cursor:pointer;font-weight:600;transition:all .15s ease}
+    .tab[aria-selected="true"]{background:#fff}
+    .tab:hover{transform:translateY(-1px)}
+
+    /* Header */
+    .play-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:10px 0 18px}
+    .play-title{font-size:22px;font-weight:800;letter-spacing:.2px}
+    .accent-pill{padding:6px 10px;border-radius:999px;color:#fff;font-weight:700;font-size:12px;white-space:nowrap}
+
+    /* Screen switcher */
+    .screen-switch{display:flex;gap:8px;margin-bottom:12px}
+    .screen-btn{padding:8px 12px;border:1px solid var(--line);background:#f9fafb;border-radius:10px;cursor:pointer;font-weight:600}
+    .screen-btn[aria-pressed="true"]{background:#fff;border-color:currentColor}
+
+    /* Panels */
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* Screen 1: Plays to Build */
+    .plays-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .card{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:#fff}
+    .card h4{margin:0 0 8px;font-size:16px}
+    .card p{margin:0 0 8px;color:var(--muted);line-height:1.5}
+    .example{padding:10px;border-left:3px solid currentColor;background:#f9fafb;border-radius:10px}
+
+    /* Screen 2: Two-row text boxes */
+    .hbox{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:8px}
+    .hbox .box{border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:#fff;min-height:120px}
+    .hbox .box h5{margin:0 0 6px;font-size:12px;letter-spacing:.2px;text-transform:uppercase;color:var(--muted)}
+    .row{margin-bottom:14px}
+    .row.blank .box{background:#fcfcfd}
+    textarea{width:100%;min-height:96px;border:1px dashed var(--line);border-radius:10px;padding:10px;resize:vertical}
+
+    /* Reflection Space */
+    .reflection{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:#fff}
+    .reflection h4{margin:0 0 6px}
+
+    /* Nav controls inside a play */
+    .nav{display:flex;justify-content:space-between;gap:10px;margin:18px 0}
+    .btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font-weight:700}
+    .btn.primary{color:#fff;border:none}
+
+    /* Responsive */
+    @media (max-width:960px){
+      .plays-grid{grid-template-columns:1fr}
+      .hbox{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="tabs" role="tablist" aria-label="Plays">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="p1" id="t1">Play 1</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p2" id="t2">Play 2</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p3" id="t3">Play 3</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p4" id="t4">Play 4</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p5" id="t5">Play 5</button>
+    </div>
+
+    <!-- Panels will be injected here by JS using the dataset below -->
+    <div id="panels"></div>
+  </div>
+
+<script>
+const PLAYS = [
+  {
+    key:"p1",
+    accent:"var(--accent1)",
+    title:"Play 1 — Build Credibility, Not Just Visibility",
+    plays:[
+      { title:"Deliver with Proof",
+        body:"Always tie outcomes to evidence (metrics, feedback, results).",
+        example:"Cycle time reduced by 18% in 3 months." },
+      { title:"Collect Peer Endorsements",
+        body:"Capture recognition emails, chat notes, and testimonials.",
+        example:"Store them in a Credibility File for reviews." },
+      { title:"Track Small Wins",
+        body:"Record weekly moments of value — don’t wait for big projects.",
+        example:"Resolved escalation before downtime → saved 4 hours." },
+      { title:"Close the Loop",
+        body:"Communicate outcomes, not just activity.",
+        example:"Training delivered to 12 team members; 90% reported readiness to apply skills immediately." }
+    ],
+    hardTruth:"In today’s workplace, being visible is not enough. You can show up in meetings, share ideas, or post updates — but if none of it translates into evidence of value, you remain noticed, not believed.",
+    coreInsight:"Credibility equals proof. Others should be able to point to your impact even when you’re not in the room. It is built through deliverables, evidence, and repeatable outcomes.",
+    successPriming:"Think of one time when someone else quoted your impact in a meeting you weren’t part of. What made that possible? How can you replicate that proof more often?",
+    successProtect:"If nothing comes to mind: pause, start small, or imagine a future example.",
+    futureForward:"Close your eyes for a moment. Imagine this is already true in your daily work. What does it feel like? What shifts around you when others notice it?",
+    takeaway:"Don’t just show up. Show proof. Visibility fades. Credibility compounds."
+  },
+  {
+    key:"p2",
+    accent:"var(--accent2)",
+    title:"Play 2 — Convert Ideas into Quantifiable Plans",
+    plays:[
+      { title:"Run Ideas Through SMART",
+        body:"Check each idea for Specific, Measurable, Actionable, Realistic, and Time-bound criteria.",
+        example:"Example: Rewrite proposal to include explicit metric and due date." },
+      { title:"Add Metrics and Deadlines",
+        body:"Every plan must include at least one metric and a timeline.",
+        example:"Launch new feature with 95% test coverage by Q3." },
+      { title:"Share as a Plan, Not a Possibility",
+        body:"Frame proposals as commitments.",
+        example:"By Q2, we will automate 40% of test scripts to reduce regression cycle by 20%." }
+    ],
+    hardTruth:"Ideas are cheap. Every workplace is flooded with them. What separates the bold leader? Turning ‘What if…’ into ‘Here’s how, by when, with what result.’",
+    coreInsight:"An idea without numbers is a suggestion. A plan with numbers is leadership.",
+    successPriming:"Think of a time when you turned an idea into a measurable plan. How did others respond differently compared to when you only shared ideas?",
+    successProtect:"If nothing comes to mind: pause, start small, or imagine a future example.",
+    futureForward:"Picture yourself six months from now, applying this play consistently. How do confidence, relevance, and recognition feel different?",
+    takeaway:"Ideas don’t retain jobs. Executed plans do."
+  },
+  {
+    key:"p3",
+    accent:"var(--accent3)",
+    title:"Play 3 — Tell Stories with Numbers",
+    plays:[
+      { title:"Choose the Right Metric",
+        body:"Don’t flood people with data. Pick the one that shows impact.",
+        example:"Our project reduced downtime by 22%, giving back 180 productive hours last quarter." },
+      { title:"Wrap Numbers in Human Impact",
+        body:"Link the data to real people or outcomes.",
+        example:"Those 180 hours meant our support team could resolve 300 more tickets — customers noticed." },
+      { title:"Create Before-and-After Contrast",
+        body:"Frame the narrative with ‘Then → Now’.",
+        example:"Six months ago, it took 5 days to close tickets. Today, it takes 2." },
+      { title:"Use Visual Anchors",
+        body:"Support your story with one simple chart, graph, or dashboard snapshot.",
+        example:"One clean bar chart summarizing the shift." }
+    ],
+    hardTruth:"Numbers on their own don’t inspire action. They overwhelm, bore, or get ignored. People remember stories — and when numbers are woven into a story, they remember and believe.",
+    coreInsight:"A story backed by clean numbers is irresistible. Numbers give credibility. Story gives memory.",
+    successPriming:"Think of a time when you used numbers to make your point and people actually remembered it. What was different about how you presented it?",
+    successProtect:"If nothing comes to mind: pause, start small, or imagine a future example.",
+    futureForward:"Picture yourself presenting to leadership. Your numbers land as a story — people quote you and carry your message forward. How does that feel?",
+    takeaway:"Don’t just show numbers. Make them speak. Stories stick."
+  },
+  {
+    key:"p4",
+    accent:"var(--accent4)",
+    title:"Play 4 — Reset and Reshape Role Expectations",
+    plays:[
+      { title:"Spot the Blind Spots",
+        body:"Look for recurring pain points your role doesn’t officially cover.",
+        example:"Noticing weekly reports confuse leadership → design a one-page dashboard." },
+      { title:"Stretch Beyond the Obvious",
+        body:"Take on one task outside your formal scope that adds value to the team.",
+        example:"Facilitate retrospectives even if it’s not in your title." },
+      { title:"Support Your Manager’s Agenda",
+        body:"Ask: What’s on your plate that I could help with?",
+        example:"Own a side project that frees your manager’s bandwidth." },
+      { title:"Reframe the Narrative",
+        body:"Describe your role not as what I do but as what I enable.",
+        example:"I don’t just run sprints; I create flow that saves 20 hours monthly." }
+    ],
+    hardTruth:"If you only do what’s written in your job description, you risk being boxed in. Roles are static, businesses are dynamic. Sticking to what’s expected keeps you safe — until safety turns into irrelevance.",
+    coreInsight:"Leaders reshape roles instead of waiting for them to be redefined. Growth comes not from what the role requires, but from what you choose to add to it.",
+    successPriming:"When was the last time you did something for the first time, outside your routine role, that added value to your manager or team?",
+    successProtect:"If nothing comes to mind: pause, start small, or imagine a future example.",
+    futureForward:"Picture yourself six months from now. Your role has stretched, your manager trusts you more, and peers see you shaping the team’s future. How does it feel?",
+    takeaway:"Don’t just meet role requirements. Reset them. Growth begins where the job description ends."
+  },
+  {
+    key:"p5",
+    accent:"var(--accent5)",
+    title:"Play 5 — Reveal, Don’t Reinvent",
+    plays:[
+      { title:"Map Your Hidden Assets",
+        body:"Identify strengths you take for granted but others admire.",
+        example:"Clear documentation peers rely on to avoid mistakes." },
+      { title:"Connect Strengths to Business Needs",
+        body:"Reframe strengths as direct value drivers.",
+        example:"Because of documentation clarity, onboarding time dropped 30%." },
+      { title:"Scale Small Wins",
+        body:"If something worked once, package and repeat it.",
+        example:"Turn one workshop into a recurring knowledge session." },
+      { title:"Showcase, Don’t Shout",
+        body:"Share results as stories that highlight revealed strengths.",
+        example:"After adopting my checklist, error rate dropped 12%." }
+    ],
+    hardTruth:"Chasing novelty is overrated. Reinvention without roots often looks shallow and is rarely sustainable.",
+    coreInsight:"Relevance is not about being new, but about being true. Revealing hidden strengths and connecting them to business needs builds lasting credibility.",
+    successPriming:"When did you last realize that something you thought was ordinary about you actually mattered to others?",
+    successProtect:"If nothing comes to mind: pause, start small, or imagine a future example.",
+    futureForward:"Picture yourself highlighting one strength in a team meeting. It lands, people lean in, and leadership sees revealed value. How does that shift confidence?",
+    takeaway:"Stop chasing reinvention. Reveal what already sets you apart."
+  }
+];
+
+function el(tag, cls){const e=document.createElement(tag); if(cls) e.className=cls; return e}
+
+function renderPlays(){
+  const root = document.getElementById('panels');
+  root.innerHTML = '';
+
+  PLAYS.forEach((p, idx)=>{
+    const panel = el('section','panel');
+    panel.id = `p${idx+1}`;
+    if(idx===0) panel.classList.add('active');
+
+    // Header
+    const header = el('div','play-header');
+    const title = el('div','play-title'); title.textContent = p.title;
+    const pill = el('div','accent-pill'); pill.textContent = `Accent`;
+    pill.style.background = p.accent;
+    header.appendChild(title); header.appendChild(pill);
+
+    // Screen switch
+    const switcher = el('div','screen-switch');
+    const s1 = el('button','screen-btn'); s1.textContent = 'Screen 1: Plays to Build'; s1.setAttribute('aria-pressed','true');
+    const s2 = el('button','screen-btn'); s2.textContent = 'Screen 2: Reflect & Capture'; s2.setAttribute('aria-pressed','false');
+    switcher.appendChild(s1); switcher.appendChild(s2);
+
+    // Screen 1 content
+    const s1Wrap = el('div');
+    const playsGrid = el('div','plays-grid');
+    p.plays.forEach(pl=>{
+      const card = el('div','card');
+      const h4 = el('h4'); h4.textContent = pl.title;
+      const b = el('p'); b.textContent = pl.body;
+      const ex = el('div','example');
+      const exH = el('strong'); exH.textContent = 'Example:'; ex.appendChild(exH);
+      const exP = el('div'); exP.textContent = ' ' + pl.example; ex.appendChild(exP);
+      card.append(h4,b,ex);
+      playsGrid.appendChild(card);
+    });
+    s1Wrap.appendChild(playsGrid);
+
+    // Screen 2 content
+    const s2Wrap = el('div');
+
+    // Row 1: Pre-filled
+    const row1 = el('div','row');
+    const h1 = el('div','hbox');
+    const boxes1 = [
+      {label:'Hard truth (why this matters)', text:p.hardTruth},
+      {label:'Core insight (anchor the principles)', text:p.coreInsight},
+      {label:'Success priming (reflection)', text:p.successPriming + '\n\nProtection note (short): ' + p.successProtect},
+      {label:'Future forward (imagination)', text:p.futureForward},
+      {label:'Key takeaways', text:p.takeaway}
+    ];
+    boxes1.forEach(b=>{
+      const box = el('div','box');
+      const h5 = el('h5'); h5.textContent = b.label; box.appendChild(h5);
+      const ptxt = el('p'); ptxt.textContent = b.text; box.appendChild(ptxt);
+      h1.appendChild(box);
+    });
+    row1.appendChild(h1);
+
+    // Row 2: Blank inputs
+    const row2 = el('div','row blank');
+    const h2 = el('div','hbox');
+    ['Hard truth','Core insight','Success priming','Future forward','Key takeaways'].forEach(lbl=>{
+      const box = el('div','box');
+      const h5 = el('h5'); h5.textContent = lbl; box.appendChild(h5);
+      const ta = document.createElement('textarea'); ta.setAttribute('aria-label', lbl + ' input');
+      box.appendChild(ta);
+      h2.appendChild(box);
+    });
+    row2.appendChild(h2);
+
+    // Reflection Space
+    const reflection = el('div','reflection');
+    const rh = el('h4'); rh.textContent = 'Reflection space';
+    const rta = document.createElement('textarea'); rta.placeholder = 'Write your broader reflections for this play…';
+    reflection.append(rh, rta);
+
+    const s2Block = el('div');
+    s2Block.append(row1,row2);
+
+    // Navigation (switch screens)
+    const nav = el('div','nav');
+    const back = el('button','btn'); back.textContent = 'Back to Screen 1';
+    const next = el('button','btn primary'); next.textContent = 'Go to Screen 2'; next.style.background = p.accent;
+    nav.append(back,next);
+
+    // Wire up switching
+    function showScreen(which){
+      const is1 = which===1;
+      s1.setAttribute('aria-pressed', is1?'true':'false');
+      s2.setAttribute('aria-pressed', !is1?'true':'false');
+      s1Wrap.style.display = is1? 'block':'none';
+      s2Block.style.display = !is1? 'block':'none';
+      back.style.display = is1? 'none':'inline-flex';
+      next.style.display = is1? 'inline-flex':'none';
+    }
+    s1.addEventListener('click',()=>showScreen(1));
+    s2.addEventListener('click',()=>showScreen(2));
+    next.addEventListener('click',()=>showScreen(2));
+    back.addEventListener('click',()=>showScreen(1));
+
+    showScreen(1);
+
+    panel.append(header,switcher,s1Wrap,s2Block,nav,reflection);
+
+    // Accent coloring
+    panel.querySelectorAll('.screen-btn,[class^="btn"], .example').forEach(node=>{
+      node.style.color = p.accent;
+    });
+
+    document.getElementById('panels').appendChild(panel);
+  });
+}
+
+function wireTabs(){
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const panels = Array.from(document.querySelectorAll('.panel'));
+  function activate(i){
+    tabs.forEach((t,idx)=>{t.setAttribute('aria-selected', idx===i?'true':'false')});
+    panels.forEach((p,idx)=>{p.classList.toggle('active', idx===i)});
+  }
+  tabs.forEach((t,idx)=> t.addEventListener('click', ()=>activate(idx)));
+}
+
+renderPlays();
+wireTabs();
+</script>
+</body>
+</html>
